@@ -1,0 +1,114 @@
+/* college.css */
+
+.college-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .college-container h1 {
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  .college-info {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .college-info h2 {
+    font-size: 2rem;
+    color: #0078d4;
+  }
+  
+  .college-info ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .college-info li {
+    margin-bottom: 10px;
+  }
+  
+  .call-to-action {
+    text-align: center;
+  }
+  
+  .call-to-action h3 {
+    font-size: 1.8rem;
+    color: #333;
+  }
+  
+  .join-button {
+    background-color: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .join-button:hover {
+    background-color: #005bb5;
+  }
+  
+  /* Image upload section */
+  .upload-section {
+    margin-top: 30px;
+  }
+  
+  .upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .upload-label {
+    font-size: 1.2rem;
+    color: #0078d4;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .upload-form input[type="file"] {
+    display: none; /* Hide the default file input */
+  }
+  
+  .preview-container {
+    margin-top: 20px;
+  }
+  
+  .preview-image {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: cover;
+    border: 2px solid #0078d4;
+    border-radius: 8px;
+  }
+  
+  .upload-button {
+    background-color: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .upload-button:hover {
+    background-color: #005bb5;
+  }
+  
+  .message {
+    margin-top: 20px;
+    color: green;
+    font-weight: bold;
+  }
+  

@@ -64,10 +64,10 @@ var transporter = nodemailer.createTransport({
 });
 
 var mailOptions = {
-  from: 'vikrantchakole.22@stvincentngp.edu.in',
+  from: 'vikrantchakole36@gmail.com',
   to: email,
   subject: 'Reset password',
-  text: `http://localhost:5173/resetPassword/${token}`
+  text: `http://localhost:5174/resetPassword/${token}`
 };
 
 transporter.sendMail(mailOptions, function(error, info){
