@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
     "axios": "^1.7.9",
+    "browser-image-compression": "^2.0.2",
+    "ipfs-http-client": "^60.0.1",
+    "pinata": "^1.10.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1"

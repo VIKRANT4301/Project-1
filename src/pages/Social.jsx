@@ -55,12 +55,14 @@ const Social = () => {
 
   return (
     <div className="social-container">
-      <h1>Social Page</h1>
-      <p>Share your moments and interact with others.</p>
+      <header className="social-header">
+        <h1>Social Moments</h1>
+        <p>Share your moments, interact, and make connections.</p>
+      </header>
 
       {/* Image Upload Section */}
       <section className="upload-section">
-        <h2>Upload Your Social Image</h2>
+        <h2>Upload Your Image</h2>
         <form onSubmit={handleSubmit} className="upload-form">
           <label htmlFor="image-upload" className="upload-label">
             Choose an image

@@ -1,114 +1,197 @@
-/* professional.css */
+/* General Styling */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
 
 .professional-container {
-    padding: 30px;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    text-align: center;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Section */
+.professional-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.professional-header h1 {
+  font-size: 36px;
+  color: #4CAF50;
+  margin-bottom: 10px;
+}
+
+.professional-header p {
+  font-size: 18px;
+  color: #666;
+}
+
+/* Info Section */
+.professional-info h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #4CAF50;
+}
+
+.professional-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.professional-info li {
+  font-size: 18px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.professional-info li::before {
+  content: "✔";
+  color: #4CAF50;
+  margin-right: 10px;
+}
+
+/* Upload Section */
+.upload-section {
+  margin-top: 40px;
+}
+
+.upload-section h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #4CAF50;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.upload-label {
+  background-color: #4CAF50;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.upload-label:hover {
+  background-color: #388E3C;
+}
+
+.image-upload {
+  color: #333;
+  display: none;
+}
+
+.preview-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.preview-container h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #4CAF50;
+}
+
+.preview-image {
+  width: 200px;
+  height: auto;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+}
+
+/* Button Styling */
+.upload-button {
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.upload-button:hover {
+  background-color: #45A049; /* Slightly darker green on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect for hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Message Styling */
+.upload-message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #4CAF50; /* Green color for success message */
+  text-align: center;
+  font-weight: bold;
+}
+
+/* General Styling */
+.upload-section {
+  margin-top: 40px;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.preview-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.preview-container h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.preview-image {
+  width: 200px;
+  height: auto;
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .professional-container {
+    padding: 15px;
   }
-  
-  .professional-container h1 {
-    font-size: 2.5rem;
-    color: #333;
+
+  .professional-header h1 {
+    font-size: 28px;
   }
-  
-  .professional-info {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+
+  .professional-info h2,
+  .upload-section h2 {
+    font-size: 24px;
   }
-  
-  .professional-info h2 {
-    font-size: 2rem;
-    color: #0078d4;
-  }
-  
-  .professional-info ul {
-    list-style-type: disc;
-    padding-left: 20px;
-  }
-  
-  .professional-info li {
-    margin-bottom: 10px;
-  }
-  
-  .call-to-action {
-    text-align: center;
-  }
-  
-  .call-to-action h3 {
-    font-size: 1.8rem;
-    color: #333;
-  }
-  
-  .join-button {
-    background-color: #0078d4;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .join-button:hover {
-    background-color: #005bb5;
-  }
-  
-  /* Image upload section */
-  .upload-section {
-    margin-top: 40px;
-  }
-  
-  .upload-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .upload-label {
-    font-size: 1.2rem;
-    color: #0078d4;
-    margin-bottom: 15px;
-    cursor: pointer;
-  }
-  
-  .upload-form input[type="file"] {
-    display: none; /* Hide the default file input */
-  }
-  
-  .preview-container {
-    margin-top: 20px;
-  }
-  
-  .preview-image {
-    max-width: 400px;
-    max-height: 400px;
-    object-fit: cover;
-    border: 2px solid #0078d4;
-    border-radius: 8px;
-  }
-  
+
   .upload-button {
-    background-color: #0078d4;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 25px;
+    width: 100%;
   }
-  
-  .upload-button:hover {
-    background-color: #005bb5;
+  .uploaded-images h2{
+    color: #333;
   }
-  
-  .message {
-    margin-top: 20px;
-    color: green;
-    font-weight: bold;
+
+  .preview-image {
+    width: 150px;
   }
-  
+}

@@ -1,84 +1,124 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
-import "./college.css"
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
+import imageCompression from "browser-image-compression"; // Ensure this library is installed
+import "./college.css"; // Ensure styles are defined here
 
 const College = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [image, setImage] = useState("");
+  const [allImages, setAllImages] = useState([]);
   const [message, setMessage] = useState("");
 
-  // Handle file selection
-  const handleImageChange = (e) => {
+   async function fetchImages() {
+      try {
+        const response = await fetch("http://localhost:3000/api/get-image", {
+          method: "GET",
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch images");
+        }
+  
+        const data = await response.json();
+        setAllImages(data.data);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    }
+  
+    useEffect(() => {
+      fetchImages(); // Fetch images on component mount
+    }, []);
+  // Handle image selection and compression
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Generate image preview URL
+    if (!file) return;
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const reader = new FileReader();
+      reader.readAsDataURL(compressedFile);
+      reader.onload = () => setImage(reader.result);
+      reader.onerror = (err) => console.error("Error reading file:", err);
+    } catch (err) {
+      console.error("Compression Error:", err);
     }
   };
 
-  // Handle form submission (you can send the image to the server here)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (selectedImage) {
-      // Simulate image upload logic (you can replace this with actual upload logic)
-      setMessage("Image uploaded successfully!");
-      // Reset the preview and selected image
-      setSelectedImage(null);
-      setPreviewUrl("");
-    } else {
+  // Upload image to the backend
+  const uploadImage = async () => {
+    if (!image) {
       setMessage("Please select an image to upload.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ base64: image }),
+      });
+
+      const data = await response.json();
+      if (data.status === "ok") {
+        setMessage("Image uploaded successfully!");
+        setImage("");
+        fetchImages(); // Refresh images
+      } else {
+        setMessage("Failed to upload image. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setMessage("Error uploading image.");
     }
   };
 
   return (
     <div className="college-container">
-      <h1>College Page</h1>
-      <p>Welcome to the College Page! Share your memories, events, and experiences with your peers.</p>
+      <h1>College Memories</h1>
+      <p>
+        Share your favorite college memories with the community by uploading images below.
+      </p>
 
-      {/* College Information Section */}
-      <section className="college-info">
-        <h2>Why Share Your College Moments?</h2>
-        <ul>
-          <li>Celebrate your achievements.</li>
-          <li>Share events and memories with friends.</li>
-          <li>Get involved in college activities.</li>
-        </ul>
-      </section>
-
-      <section className="call-to-action">
-        <h3>Get Involved in the College Community!</h3>
-        <p>Upload your favorite memories and experiences with the college community!</p>
-        <button className="join-button">Join the College Community</button>
-      </section>
-
-      {/* Image Upload Section */}
-      <section className="upload-section">
+      <div className="upload-section">
         <h2>Upload Your College Image</h2>
-        <form onSubmit={handleSubmit} className="upload-form">
-          <label htmlFor="image-upload" className="upload-label">
-            Choose an image
-          </label>
-          <input 
-            type="file" 
-            id="image-upload" 
-            accept="image/*"
-            onChange={handleImageChange} 
-          />
-          
-          {previewUrl && (
-            <div className="preview-container">
-              <h3>Image Preview:</h3>
-              <img src={previewUrl} alt="Preview" className="preview-image" />
-            </div>
-          )}
-          
-          <button type="submit" className="upload-button">Upload</button>
-        </form>
-
-        {/* Display feedback message */}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="file-input"
+        />
+        {image && (
+          <div className="preview-container">
+            <h3>Image Preview</h3>
+            <img src={image} alt="Preview" className="preview-image" />
+          </div>
+        )}
+        <button onClick={uploadImage} className="upload-button">
+          Upload Image
+        </button>
         {message && <p className="message">{message}</p>}
-      </section>
+      </div>
+
+      <div className="gallery-section">
+        <h2>Uploaded College Memories</h2>
+        {allImages.length > 0 ? (
+          <div className="image-gallery">
+            {allImages.map((img, idx) => (
+              <div key={idx} className="image-item">
+                <img src={img.image} alt={`Memory ${idx}`} className="gallery-image" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No images uploaded yet. Be the first to share!</p>
+        )}
+      </div>
     </div>
   );
 };

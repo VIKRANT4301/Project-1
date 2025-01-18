@@ -1,84 +1,156 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import './professional.css'; // Optional: Add custom styles for this page
+import React, { useState, useEffect } from "react";
+import imageCompression from "browser-image-compression";
+import "./professional.css";
 
 const Professional = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [allImages, setAllImages] = useState([]); // Store all uploaded images
 
-  // Handle file selection
+  // Handle file selection and set preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Generate image preview URL
+      setPreviewUrl(URL.createObjectURL(file)); // Generate preview
     }
   };
 
-  // Handle form submission (you can send the image to the server here)
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Compress and upload image
+  const handleImageUpload = async () => {
+    if (!selectedImage) return;
 
-    if (selectedImage) {
-      // Simulate image upload logic (you can replace this with actual upload logic)
-      setMessage("Image uploaded successfully!");
-      // Reset the preview and selected image
+    const options = {
+      maxSizeMB: 1, // Compress to 1MB
+      maxWidthOrHeight: 1920,
+      useWebWorker: true, // Better performance
+    };
+
+    try {
+      // Compress the image
+      const compressedFile = await imageCompression(selectedImage, options);
+
+      // Convert compressed image to Base64
+      const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
+
+      // Upload the image
+      await uploadImage(base64);
+    } catch (error) {
+      console.error("Error compressing the image:", error);
+      setMessage("Error compressing the image.");
+    }
+  };
+
+  // Upload Base64 image to server
+  const uploadImage = async (base64) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ base64 }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image.");
+      }
+
+      const data = await response.json();
+      setMessage(data.message);
+
+      // Refresh the image feed
+      fetchImages();
+
+      // Reset inputs
       setSelectedImage(null);
       setPreviewUrl("");
-    } else {
-      setMessage("Please select an image to upload.");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setMessage("Error uploading image.");
     }
   };
+
+  // Fetch uploaded images from server
+  const fetchImages = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/get-image", {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch images.");
+      }
+
+      const data = await response.json();
+      setAllImages(data.data); // Update image feed
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  // Fetch images on component mount
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   return (
     <div className="professional-container">
-      <h1>Professional Page</h1>
-      <p>Welcome to the Professional Page! This is the place for professionals to share ideas, experiences, and connect with others in the industry.</p>
+      <header className="professional-header">
+        <h1>Professional Network</h1>
+        <p>Showcase your achievements, connect with professionals, and grow your network.</p>
+      </header>
 
-      {/* Professional Information Section */}
       <section className="professional-info">
-        <h2>Why Share Your Professional Achievements?</h2>
+        <h2>Why Join?</h2>
         <ul>
-          <li>Showcase your skills and accomplishments.</li>
-          <li>Share your work experiences and professional achievements.</li>
-          <li>Connect with industry leaders and professionals.</li>
-          <li>Stay updated on the latest industry trends.</li>
+          <li>Highlight your expertise and skills.</li>
+          <li>Share your career milestones.</li>
+          <li>Collaborate with industry leaders.</li>
+          <li>Stay informed about trends.</li>
         </ul>
       </section>
 
-      <section className="call-to-action">
-        <h3>Network with Industry Professionals!</h3>
-        <p>Join the professional community by uploading your work, projects, and achievements!</p>
-        <button className="join-button">Join the Professional Network</button>
-      </section>
-
-      {/* Image Upload Section */}
       <section className="upload-section">
         <h2>Upload Your Professional Image</h2>
-        <form onSubmit={handleSubmit} className="upload-form">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleImageUpload();
+          }}
+          className="upload-form"
+        >
           <label htmlFor="image-upload" className="upload-label">
-            Choose an image
+            Choose an Image
           </label>
-          <input 
-            type="file" 
-            id="image-upload" 
-            accept="image/*"
-            onChange={handleImageChange} 
-          />
-          
+          <input type="file" id="image-upload" accept="image/*" onChange={handleImageChange} />
+
           {previewUrl && (
             <div className="preview-container">
-              <h3>Image Preview:</h3>
+              <h3>Preview</h3>
               <img src={previewUrl} alt="Preview" className="preview-image" />
             </div>
           )}
-          
-          <button type="submit" className="upload-button">Upload</button>
+
+          <button type="submit" className="upload-button">
+            Upload Image
+          </button>
         </form>
 
-        {/* Display feedback message */}
-        {message && <p className="message">{message}</p>}
+        {message && <p className="upload-message">{message}</p>}
+      </section>
+
+      <section className="uploaded-images">
+        <h2>Uploaded Images</h2>
+        <div className="feed-container">
+          {allImages.map((post, index) => (
+            <div key={index} className="post">
+              <img src={post.image} alt={`Uploaded ${index}`} className="post-image" />
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

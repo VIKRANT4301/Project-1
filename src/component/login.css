@@ -1,117 +1,117 @@
-/* login.css */
-
 /* General body and container styling */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  background-color: #111; /* Dark background for the entire page */
+  color: #ddd; /* Light text color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.login-container {
+  background-color: #222; /* Dark background for the container */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Header styling */
+h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #fff; /* White text for the header */
+}
+
+/* Label and input styling */
+label {
+  font-size: 1rem;
+  color: #ddd; /* Light label color */
+  text-align: left;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #444; /* Dark border */
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #333; /* Dark background for inputs */
+  color: #ddd; /* Light text color for input */
+  transition: border-color 0.3s ease;
+}
+
+/* Input focus state */
+input:focus {
+  border-color: #4CAF50; /* Green border when focused */
+  outline: none;
+}
+
+/* Button styling */
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #46a049; /* Darker green on hover */
+}
+
+/* Links and additional text */
+.login-links {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.forgot-password {
+  color: #4CAF50; /* Green link color */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #46a049; /* Darker green on hover */
+}
+
+.login-links p {
+  margin-top: 10px;
+  color: #bbb; /* Light grey color for paragraph text */
+}
+
+.login-links a {
+  color: #4CAF50; /* Green link color */
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  color: #46a049; /* Darker green on hover */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
   .login-container {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  
-  /* Header styling */
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  /* Label and input styling */
-  label {
-    font-size: 1rem;
-    color: #333;
-    text-align: left;
-    margin-bottom: 8px;
-    display: block;
-  }
-  
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  /* Input focus state */
-  input:focus {
-    border-color: #0078d4;
-    outline: none;
-  }
-  
-  /* Button styling */
-  .login-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #0078d4;
-    color: white;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .login-button:hover {
-    background-color: #005bb5;
-  }
-  
-  /* Links and additional text */
-  .login-links {
-    margin-top: 20px;
-    font-size: 0.9rem;
-  }
-  
-  .forgot-password {
-    color: #0078d4;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .forgot-password:hover {
-    color: #005bb5;
-  }
-  
-  .login-links p {
-    margin-top: 10px;
-    color: #555;
-  }
-  
-  .login-links a {
-    color: #0078d4;
-    text-decoration: none;
-  }
-  
-  .login-links a:hover {
-    color: #005bb5;
-  }
-  
-  /* Responsive design for smaller screens */
-  @media (max-width: 480px) {
-    .login-container {
       padding: 20px;
-    }
-  
-    h2 {
-      font-size: 1.6rem;
-    }
-  
-    .login-button {
-      font-size: 1rem;
-    }
   }
-  
+
+  h2 {
+      font-size: 1.6rem;
+  }
+
+  .login-button {
+      font-size: 1rem;
+  }
+}
