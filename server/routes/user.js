@@ -3,27 +3,12 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import bodyParser from "body-parser";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
-import { fileURLToPath } from "url";
+
 import User from "../models/User.js"; // Ensure you have a User model defined
 
 const router = express.Router();
 
-// Middleware
-router.use(bodyParser.json({ limit: "10mb" }));
 
-// Utility to get __dirname in ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Directory to store uploaded images
-const UPLOAD_DIR = path.join(__dirname, "uploads");
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR);
-}
 
 // Signup Route
 router.post("/signup", async (req, res) => {
@@ -139,46 +124,5 @@ router.post("/forgotpassword", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-// Upload Image Route
-router.post("/api/upload", (req, res) => {
-  const { base64 } = req.body;
-
-  if (!base64) {
-    return res.status(400).send({ message: "No image provided" });
-  }
-
-  const imageData = base64.split(";base64,").pop();
-  const fileName = `${uuidv4()}.png`;
-  const filePath = path.join(UPLOAD_DIR, fileName);
-
-  fs.writeFile(filePath, imageData, { encoding: "base64" }, (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({ message: "Failed to save image" });
-    }
-
-    res.send({ message: "Image uploaded successfully", fileName });
-  });
-});
-
-// Fetch Uploaded Images Route
-router.get("/api/get-image", (req, res) => {
-  fs.readdir(UPLOAD_DIR, (err, files) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({ message: "Failed to retrieve images" });
-    }
-
-    const imageUrls = files.map((file) => ({
-      image: `http://localhost:3000/uploads/${file}`,
-    }));
-
-    res.send({ data: imageUrls });
-  });
-});
-
-// Serve Uploaded Images
-router.use("/uploads", express.static(UPLOAD_DIR));
 
 export { router as UserRouter };
