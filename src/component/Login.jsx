@@ -14,13 +14,21 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
     Axios.post("http://localhost:3000/auth/login", {
       email,
       password,
     })
       .then((response) => {
         if (response.data.status) {
-          const userName = response.data.userName || "User";
+          const userName = response.data.userName;
+          const token = response.data.token;
+  
+          // Store token and username in localStorage
+          localStorage.setItem('token', token);
+          localStorage.setItem('username', userName);
+  
+          // Navigate to the home page
           navigate("/home", { state: { userName } });
         } else {
           setError("Invalid credentials. Please try again.");
@@ -31,9 +39,20 @@ const Login = () => {
         console.error("Login failed:", err);
       });
   };
+  
 
   return (
-    <div className="login-container">
+    <div className="login">
+    <div className="card">
+      <div className="left">
+        <h2>Media Integrity and Provenance</h2>
+
+        <span>Do not you have an account?</span>
+        <Link to="/signup">
+          <button>Sign Up</button>
+        </Link>
+      </div>
+    <div className="right">
       <h2>Login</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
@@ -73,6 +92,8 @@ const Login = () => {
           </p>
         </div>
       </form>
+    </div>
+    </div>
     </div>
   );
 };

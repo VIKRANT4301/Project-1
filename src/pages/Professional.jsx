@@ -20,7 +20,10 @@ const Professional = () => {
 
   // Compress and upload image
   const handleImageUpload = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      setMessage("Please select an image before uploading.");
+      return;
+    }
 
     const options = {
       maxSizeMB: 1, // Compress to 1MB
@@ -36,7 +39,11 @@ const Professional = () => {
       const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
 
       // Upload the image
-      await uploadImage(base64);
+      const success = await uploadImage(base64);
+      if (success) {
+        setMessage("Image uploaded successfully!");
+        fetchImages(); // Refresh the image feed
+      }
     } catch (error) {
       console.error("Error compressing the image:", error);
       setMessage("Error compressing the image.");
@@ -59,17 +66,12 @@ const Professional = () => {
       }
 
       const data = await response.json();
-      setMessage(data.message);
-
-      // Refresh the image feed
-      fetchImages();
-
-      // Reset inputs
-      setSelectedImage(null);
-      setPreviewUrl("");
+      console.log("Image uploaded successfully:", data);
+      return true;
     } catch (error) {
       console.error("Error uploading image:", error);
       setMessage("Error uploading image.");
+      return false;
     }
   };
 
@@ -85,9 +87,10 @@ const Professional = () => {
       }
 
       const data = await response.json();
-      setAllImages(data.data); // Update image feed
+      setAllImages(data.data || []); // Update image feed
     } catch (error) {
       console.error("Error fetching images:", error);
+      setMessage("Error fetching uploaded images.");
     }
   };
 
@@ -145,11 +148,15 @@ const Professional = () => {
       <section className="uploaded-images">
         <h2>Uploaded Images</h2>
         <div className="feed-container">
-          {allImages.map((post, index) => (
-            <div key={index} className="post">
-              <img src={post.image} alt={`Uploaded ${index}`} className="post-image" />
-            </div>
-          ))}
+          {allImages.length > 0 ? (
+            allImages.map((post, index) => (
+              <div key={index} className="post">
+                <img src={post.image} alt={`Uploaded ${index}`} className="post-image" />
+              </div>
+            ))
+          ) : (
+            <p>No images uploaded yet.</p>
+          )}
         </div>
       </section>
     </div>

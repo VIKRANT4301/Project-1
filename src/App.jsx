@@ -8,8 +8,10 @@ import Personal from "../src/pages/Personal";
 import College from "../src/pages/College";
 import Social from "../src/pages/Social";
 import Community from "../src/pages/Community";
-import Wallet from "./component/Wallet";
 import Upload from "./File/upload";
+
+
+
 
 
 
@@ -27,8 +29,8 @@ function App() {
       <Route path = "/college" element={<College />}></Route>
       <Route path = "/social" element={<Social />}></Route>
       <Route path = "/community" element={<Community/>}></Route>
-      <Route path = "/wallet" element={<Wallet/>}></Route>
       <Route path = "/upload" element={<Upload/>}></Route>
+
      </Routes>
 
     </BrowserRouter>

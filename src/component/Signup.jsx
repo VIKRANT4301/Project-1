@@ -31,7 +31,21 @@ const Signup = () => {
     }
 
     return(
-         <div className='sign-up-container'>
+      <div className="register">
+      <div className="card">
+        <div className="left">
+          <h2>Media Integrity and Provenance</h2>
+          <p>
+
+Media Integrity and Provenance refers to the process of ensuring the authenticity, origin, and history of digital media, such as images, videos, and documents, using technologies like blockchain. It aims to protect media from tampering and provide verifiable proof of its source and alterations.
+          </p>
+          <span>Do you have an account?</span>
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
+        </div>
+
+         <div className='right'>
             <h2>Sign Up</h2>
             <form className='sign-up-form' onSubmit={handleSubmit}>
                 <label htmlFor="username">Username:</label>
@@ -53,9 +67,9 @@ const Signup = () => {
 
             </form>
          </div>
-
+</div>
+</div>
     )
 };
 
 export default Signup
-

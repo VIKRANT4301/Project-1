@@ -10,14 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.0",
+    "@mui/material": "^6.4.0",
     "@pinata/sdk": "^2.1.0",
+    "@tanstack/react-query": "^5.64.1",
     "axios": "^1.7.9",
     "browser-image-compression": "^2.0.2",
     "ipfs-http-client": "^60.0.1",
     "pinata": "^1.10.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.1.1"
+    "react-router-dom": "^7.1.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -29,6 +34,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "sass-embedded": "^1.83.4",
     "vite": "^6.0.5"
   }
 }

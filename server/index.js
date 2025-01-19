@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.json(('')));
 app.use(cors({
   origin: ["http://localhost:5174"], // Adjust based on your frontend URL
   credentials: true,
@@ -23,6 +23,7 @@ app.use('/auth', UserRouter);
 
 app.use(bodyParser.json({ limit: '100mb' })); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+app.use(UserRouter);
 
 // MongoDB Connection
 mongoose.connect('mongodb://127.0.0.1:27017/Register');

@@ -1,107 +1,139 @@
-/* Global Styles */
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #111; /* Darker background for the entire page */
-  color: #ddd;
-  height: 100vh; /* Full screen height */
+/* General container styles */
+.register {
   display: flex;
   justify-content: center;
-  align-items: center; /* Center the content vertically and horizontally */
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
 }
 
-.sign-up-container {
+/* Card container for the layout */
+.card {
+  display: flex;
+  width: 80%;
+  max-width: 1000px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Left section with text */
+.left {
+  flex: 1;
+  background-color: #4CAF50;
+  background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
+  url("https://static.vecteezy.com/system/resources/thumbnails/022/865/183/small/ai-generative-technology-block-chain-concept-background-photo.jpg")
+    center;
+background-size: cover;
+  color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.left p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.left span {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.left button {
+  padding: 1rem;
+  background-color: white;
+  color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.left button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Right section (form area) */
+.right {
+  flex: 1;
+  background-color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.right .sign-up-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background-color: #222; /* Dark background for the container */
-  padding: 2rem;
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
-  max-width: 400px; /* Limit the form width */
-  width: 100%;
 }
 
-h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #823636; /* White text for the header */
-}
-
-.sign-up-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 2rem;
-  border-radius: 8px;
-  background-color: #333; /* Darker background for the form */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
-}
-
-.sign-up-form label {
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #fff;
-}
-
-.sign-up-form input {
-  padding: 0.8rem;
-  border: 1px solid #444; /* Border color */
-  border-radius: 4px;
-  margin-bottom: 1.2rem;
+.right label {
   font-size: 1rem;
-  background-color: #222; /* Dark background for inputs */
-  color: #ddd; /* Light text color */
-  transition: border-color 0.3s ease;
+  margin-bottom: 0.3rem;
+  color: #333;
+  width: 100%;
 }
 
-.sign-up-form input:focus {
-  border-color: #4CAF50; /* Green border when focused */
-  outline: none;
-}
-
-.sign-up-form button {
+.right input {
+  width: 100%;
   padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.right input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.right button {
+  padding: 1rem;
+  background-color: #4CAF50;
+  color: white;
   border: none;
   border-radius: 5px;
-  background-color: #4CAF50; /* Green background */
-  color: white;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.sign-up-form button:hover {
-  background-color: #46a049; /* Darker green on hover */
-}
-
-.sign-up-form button:disabled {
-  background-color: #888; /* Disabled button color */
-  cursor: not-allowed;
-}
-
-.sign-up-form p {
-  margin-top: 1.5rem;
-  text-align: center;
   font-size: 1rem;
+  width: 100%;
+  transition: background-color 0.3s ease;
 }
 
-.sign-up-form a {
-  color: #4CAF50; /* Blue link color */
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
+.right button:hover {
+  background-color: #45a049;
 }
 
-.sign-up-form a:hover {
-  color: #46a049; /* Darker blue on hover */
-}
-
-.error-message {
-  color: #ff4d4d; /* Red for error message */
-  font-size: 0.9rem;
-  text-align: center;
+.right p {
   margin-top: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.right a {
+  text-decoration: none;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.right a:hover {
+  color: #45a049;
 }

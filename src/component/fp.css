@@ -1,0 +1,88 @@
+/* General container styles */
+.sign-up-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding: 1rem;
+  }
+  
+  /* Title styling */
+  .sign-up-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Form container */
+  .sign-up-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Label styling */
+  .sign-up-form label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  /* Input styling */
+  .sign-up-form input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .sign-up-form input:focus {
+    outline: none;
+    border-color: #4CAF50;
+  }
+  
+  /* Button styling */
+  .sign-up-form button {
+    width: 100%;
+    padding: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sign-up-form button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Paragraph and link styling */
+  .sign-up-form p {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+  }
+  
+  .sign-up-form a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+  }
+  
+  .sign-up-form a:hover {
+    color: #45a049;
+  }
+  

@@ -1,10 +1,9 @@
 
-
 /* eslint-disable no-unused-vars */
 
 import React,{useState} from 'react'
 import Axios from "axios"
-import './signup.css'
+import "./fp.css"
 import { Link, useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
