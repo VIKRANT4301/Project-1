@@ -18,7 +18,7 @@ const corsOptions = {
 };
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-UserRouter.use(cors(corsOptions)); // Apply CORS middleware to UserRouter
+UserRouter.use(cors(corsOptions));
 
 // Signup Route
 UserRouter.post("/signup", async (req, res) => {
@@ -150,5 +150,36 @@ UserRouter.post("/verify-token", async (req, res) => {
     return res.status(400).json({ status: false, message: "Expired or invalid token" });
   }
 });
+
+
+
+
+ UserRouter.post("/send-alert", async (req, res) => {
+  const { message, email } = req.body;
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.MY_GMAIL,
+      pass: process.env.MY_PASSWORD,
+    },
+  });
+
+  let mailOptions = {
+    from: process.env.MY_GMAIL,
+    to: email,
+    subject: "Security Alert: Unauthorized Image Download Attempt",
+    text: message,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).send({ success: true, message: "Alert email sent." });
+  } catch (error) {
+    console.error("Email error:", error);
+    res.status(500).send({ success: false, message: "Failed to send alert email." });
+  }
+});
+
 
 export default UserRouter;

@@ -1,127 +1,140 @@
 /* professional.css */
 
-/* General Styles */
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #eef2f3;
-  color: #222;
-  line-height: 1.6;
-}
-
-/* Container */
 .professional-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  font-family: Arial, sans-serif;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
-/* Header */
 .professional-header {
-  background: linear-gradient(90deg, #4b6cb7, #182848);
-  color: white;
-  padding: 30px 20px;
   text-align: center;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 800px;
-  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.professional-header h1 {
+  font-size: 2rem;
   font-weight: bold;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  color: #2c3e50;
 }
 
 /* Upload Section */
 .upload-section {
-  background-color: white;
-  margin-top: 20px;
+  text-align: center;
   padding: 20px;
-  width: 100%;
-  max-width: 600px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-.upload-section form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+.upload-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #34495e;
 }
 
 .upload-section input[type="file"] {
-  padding: 8px;
-  border: 2px solid #4b6cb7;
-  border-radius: 6px;
-  width: 100%;
-  max-width: 300px;
-  background: #f4f4f4;
-  font-size: 0.9rem;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   cursor: pointer;
-}
-
-.upload-section img {
-  margin-top: 10px;
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  border: 1px solid #ddd;
 }
 
 .upload-section button {
+  margin-top: 15px;
   padding: 10px 20px;
-  background: #4b6cb7;
-  color: white;
+  background-color: #3498db;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
+  color: #fff;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: 0.3s ease-in-out;
 }
 
 .upload-section button:hover {
-  background: #182848;
+  background-color: #2980b9;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #e74c3c;
+}
+
+/* Image Preview */
+.image-preview {
+  margin-top: 15px;
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
 /* Uploaded Images Section */
 .uploaded-images {
-  margin-top: 30px;
-  width: 100%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .uploaded-images h2 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  color: #34495e;
   text-align: center;
-  color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.uploaded-images div {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
-.uploaded-images img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
+.image-item {
+  position: relative;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  background-color: #fff;
 }
 
-.uploaded-images img:hover {
+.image-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Messages */
-.upload-section p {
-  font-size: 0.9rem;
-  color: #555;
-  margin-top: 10px;
+.uploaded-image {
+  max-width: 300px;
+  max-height: 200px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+}
+
+.image-item p {
   text-align: center;
+  padding: 10px;
+  font-weight: bold;
+  color: #2c3e50;
+  background-color: #ecf0f1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .image-gallery {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .uploaded-image {
+    max-width: 100%;
+  }
 }

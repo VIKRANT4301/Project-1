@@ -17,19 +17,38 @@ const Social = () => {
     }
   };
 
-  // Handle form submission (simulating image upload)
-  const handleSubmit = (e) => {
+  // Handle form submission (uploading image to backend)
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (selectedImage) {
-      const newPost = {
-        id: Date.now(),
-        image: previewUrl,
-        likes: 0,
-        comments: [],
-      };
-      setSocialFeed([newPost, ...socialFeed]); // Add new post to social feed
-      setMessage("Image uploaded successfully!");
+      const formData = new FormData();
+      formData.append("file", selectedImage);
+
+      try {
+        const response = await fetch("http://localhost:3000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const newPost = {
+            id: data.id,
+            image: data.imageUrl,
+            likes: 0,
+            comments: [],
+          };
+          setSocialFeed([newPost, ...socialFeed]);
+          setMessage("Image uploaded successfully!");
+        } else {
+          setMessage("Failed to upload image.");
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setMessage("Error uploading image.");
+      }
+
       setSelectedImage(null);
       setPreviewUrl("");
     } else {
@@ -60,7 +79,6 @@ const Social = () => {
         <p>Share your moments, interact, and make connections.</p>
       </header>
 
-      {/* Image Upload Section */}
       <section className="upload-section">
         <h2>Upload Your Image</h2>
         <form onSubmit={handleSubmit} className="upload-form">
@@ -83,12 +101,9 @@ const Social = () => {
           
           <button type="submit" className="upload-button">Upload</button>
         </form>
-
-        {/* Display feedback message */}
         {message && <p className="message">{message}</p>}
       </section>
 
-      {/* Social Feed Section */}
       <section className="social-feed">
         <h2>Social Feed</h2>
         <div className="feed-container">
