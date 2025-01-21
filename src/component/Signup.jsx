@@ -22,7 +22,7 @@ const Signup = () => {
         password,
       }).then(response =>{
         if(response.data.status){
-            navigate('/login')
+            navigate('/')
         }
 
       }).catch(err =>{
@@ -40,7 +40,7 @@ const Signup = () => {
 Media Integrity and Provenance refers to the process of ensuring the authenticity, origin, and history of digital media, such as images, videos, and documents, using technologies like blockchain. It aims to protect media from tampering and provide verifiable proof of its source and alterations.
           </p>
           <span>Do you have an account?</span>
-          <Link to="/login">
+          <Link to="/">
             <button>Login</button>
           </Link>
         </div>
