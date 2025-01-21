@@ -50,7 +50,7 @@ UserRouter.post("/signup", async (req, res) => {
 });
 
 // Login Route
-UserRouter.post("/login", async (req, res) => {
+UserRouter.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   try {
