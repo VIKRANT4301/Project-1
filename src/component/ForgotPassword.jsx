@@ -1,51 +1,56 @@
-
 /* eslint-disable no-unused-vars */
-
-import React,{useState} from 'react'
-import Axios from "axios"
+import React, { useState } from "react";
+import Axios from "axios";
 import "./fp.css"
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // New success message state
+  const navigate = useNavigate();
 
-    const[email, setEmail] = useState("")
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    // Validate email before sending the request
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
-    const navigate = useNavigate()
-
-    const handleSubmit = (e) =>{
-      e.preventDefault();
-      Axios.post("http://localhost:3000/auth/forgotpassword",{
-
-      email,
-
-    }).then(response =>{
-      if(response.data.status){
-        alert("Check your Email for reset password")
-          navigate('/login')
+    try {
+      const response = await Axios.post("http://localhost:3000/auth/forgotpassword", { email });
+      if (response.data.status) {
+        setSuccessMessage("An email has been sent with a link to reset your password.");
+        // Optional: Redirect to a page that says 'Check your email'
+      } else {
+        setError(response.data.message); // Display error message from the backend
       }
+    } catch (err) {
+      console.error("Error during password reset request:", err);
+      setError("An error occurred. Please try again later.");
+    }
+  };
 
-    }).catch(err =>{
-      console.log(err)
-    })
-  }
-    return(
-         <div className='sign-up-container'>
-            <h2>Forgot Password</h2>
-            <form className='sign-up-form' onSubmit={handleSubmit}>
+  return (
+    <div className="forgot-password-container">
+      <h2>Forgot Password</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
 
-                <label htmlFor="email">Email:</label>
-                <input type="email" autoComplete='off' placeholder='Email'
-                onChange={(e) =>setEmail(e.target.value)}/>
-
-
-                <button type='submit'>Send</button>
-                <p>Already have an account? </p><Link to="/login">Login</Link>
-
-            </form>
-         </div>
-
-    )
+      {error && <div>{error}</div>}
+      {successMessage && <div>{successMessage}</div>} {/* Show success message */}
+    </div>
+  );
 };
 
-export default ForgotPassword
+export default ForgotPassword;

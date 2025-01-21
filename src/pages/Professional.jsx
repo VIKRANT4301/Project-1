@@ -9,6 +9,7 @@ const Professional = () => {
   const [message, setMessage] = useState("");
   const [allImages, setAllImages] = useState([]);
 
+  // Handle file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -17,6 +18,7 @@ const Professional = () => {
     }
   };
 
+  // Upload image to the server
   const handleImageUpload = async () => {
     if (!selectedImage) {
       setMessage("Please select an image before uploading.");
@@ -38,19 +40,22 @@ const Professional = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ base64, name: selectedImage.name }),
+        body: JSON.stringify({
+          base64: base64.replace(/^data:image\/\w+;base64,/, ""),
+          name: selectedImage.name,
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to upload image.");
       const data = await response.json();
-      setMessage(data.message);
+      setMessage(data.message || "Image uploaded successfully.");
       fetchImages();
     } catch (error) {
-      console.error("Error uploading image:", error);
       setMessage("Error uploading image.");
     }
   };
 
+  // Fetch images from server
   const fetchImages = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/get-image");
@@ -58,7 +63,6 @@ const Professional = () => {
       const data = await response.json();
       setAllImages(data.data || []);
     } catch (error) {
-      console.error("Error fetching images:", error);
       setMessage("Error fetching images.");
     }
   };
@@ -90,7 +94,7 @@ const Professional = () => {
         <div>
           {allImages.map((image, index) => (
             <div key={index}>
-              <img src={image.image} alt={image.name} />
+              <img src={`data:image/jpeg;base64,${image.image}`} alt={image.name} />
             </div>
           ))}
         </div>

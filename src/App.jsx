@@ -9,7 +9,7 @@ import College from "../src/pages/College";
 import Social from "../src/pages/Social";
 import Community from "../src/pages/Community";
 import Upload from "./File/upload";
-
+import ResetPassword from "./component/ResetPassword";
 
 
 
@@ -30,6 +30,7 @@ function App() {
       <Route path = "/social" element={<Social />}></Route>
       <Route path = "/community" element={<Community/>}></Route>
       <Route path = "/upload" element={<Upload/>}></Route>
+      <Route path = "/resetpassword/:token" element={<ResetPassword/>}></Route>
 
      </Routes>
 

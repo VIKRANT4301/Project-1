@@ -1,35 +1,38 @@
-import express from 'express';
-import Upload from "../models/uploadSchema.js"; // Correctly import the model
+import express from "express";
+import { ImageModel } from "../models/ImageModel.js";
 
-const UploadRouter = express.Router();
+const router = express.Router();
 
-// Handle image upload
-UploadRouter.post('/upload', async (req, res) => {
+// Upload image route
+router.post("/upload", async (req, res) => {
   try {
     const { base64, name } = req.body;
+    if (!base64 || !name) {
+      return res.status(400).json({ message: "Invalid input" });
+    }
 
-    const newUpload = new Upload({
+    const newImage = new ImageModel({
       name,
-      image: base64,
+      image: base64, // Store Base64 string in MongoDB
     });
 
-    await newUpload.save();
-    res.status(200).json({ message: 'Image uploaded successfully', data: newUpload });
+    await newImage.save();
+    res.status(201).json({ message: "Image uploaded successfully!" });
   } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ message: 'Error uploading image' });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Get all uploaded images
-UploadRouter.get('/get-image', async (req, res) => {
+// Get images route
+router.get("/get-image", async (req, res) => {
   try {
-    const images = await Upload.find();
+    const images = await ImageModel.find();
     res.status(200).json({ data: images });
   } catch (error) {
-    console.error('Error fetching images:', error);
-    res.status(500).json({ message: 'Error fetching images' });
+    console.error(error);
+    res.status(500).json({ message: "Error fetching images" });
   }
 });
 
-export { UploadRouter };
+export default router;

@@ -1,0 +1,82 @@
+/* Container styles */
+.reset-password-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+    text-align: center;
+  }
+  
+  .reset-password-container h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Input styles */
+  .reset-password-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .reset-password-container input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  }
+  
+  /* Button styles */
+  .reset-password-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .reset-password-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Error message styles */
+  .error-message {
+    color: #d9534f;
+    background: #f8d7da;
+    padding: 12px;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  /* Success message styles */
+  .success-message {
+    color: #28a745;
+    background: #d4edda;
+    padding: 12px;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  /* Responsive design */
+  @media (max-width: 500px) {
+    .reset-password-container {
+      width: 90%;
+      padding: 20px;
+    }
+  }

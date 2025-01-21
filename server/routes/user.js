@@ -3,15 +3,25 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import cors from "cors";
 
 import User from "../models/User.js"; // Ensure you have a User model defined
 
-const router = express.Router();
+const UserRouter = express.Router();
 
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:5174",  // Allow requests from the React app
+  credentials: true,  // Allow credentials (cookies, authorization headers)
+  methods: "GET,POST,PUT,DELETE",  // Allowed HTTP methods
+  allowedHeaders: "Content-Type,Authorization",  // Allowed headers
+};
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+UserRouter.use(cors(corsOptions)); // Apply CORS middleware to UserRouter
 
 // Signup Route
-router.post("/signup", async (req, res) => {
+UserRouter.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
@@ -40,7 +50,7 @@ router.post("/signup", async (req, res) => {
 });
 
 // Login Route
-router.post("/login", async (req, res) => {
+UserRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -77,7 +87,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Forgot Password Route
-router.post("/forgotpassword", async (req, res) => {
+UserRouter.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
 
   try {
@@ -107,7 +117,7 @@ router.post("/forgotpassword", async (req, res) => {
       to: email,
       subject: "Reset Password",
       html: `<p>You requested a password reset. Click the link below to reset your password:</p>
-             <a href="http://localhost:5174/forgotpassword/${token}">Reset Password</a>
+             <a href="http://localhost:5174/resetpassword/${token}">Reset Password</a>
              <p>This link will expire in 5 minutes.</p>`,
     };
 
@@ -125,4 +135,20 @@ router.post("/forgotpassword", async (req, res) => {
   }
 });
 
-export { router as UserRouter };
+// Backend route to verify the reset token
+UserRouter.post("/verify-token", async (req, res) => {
+  const { token } = req.body;
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.KEY); // Verify JWT token
+    if (!decoded) {
+      return res.status(400).json({ status: false, message: "Invalid token" });
+    }
+    return res.json({ status: true });
+  } catch (err) {
+    console.error("Error verifying token:", err);
+    return res.status(400).json({ status: false, message: "Expired or invalid token" });
+  }
+});
+
+export default UserRouter;
