@@ -1,37 +1,30 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import imageCompression from "browser-image-compression"; // Ensure this library is installed
-import "./college.css"; // Ensure styles are defined here
+import imageCompression from "browser-image-compression";
+import "./professional.css";
 
 const College = () => {
-  const [image, setImage] = useState("");
-  const [allImages, setAllImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [allImages, setAllImages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-   async function fetchImages() {
-      try {
-        const response = await fetch("http://localhost:3000/api/get-image", {
-          method: "GET",
-        });
-  
-        if (!response.ok) {
-          throw new Error("Failed to fetch images");
-        }
-  
-        const data = await response.json();
-        setAllImages(data.data);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      }
-    }
-  
-    useEffect(() => {
-      fetchImages(); // Fetch images on component mount
-    }, []);
-  // Handle image selection and compression
-  const handleImageUpload = async (e) => {
+  // Handle image selection
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (file) {
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  // Upload image to the server
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      setMessage("Please select an image before uploading.");
+      return;
+    }
 
     const options = {
       maxSizeMB: 1,
@@ -40,85 +33,122 @@ const College = () => {
     };
 
     try {
-      const compressedFile = await imageCompression(file, options);
-      const reader = new FileReader();
-      reader.readAsDataURL(compressedFile);
-      reader.onload = () => setImage(reader.result);
-      reader.onerror = (err) => console.error("Error reading file:", err);
-    } catch (err) {
-      console.error("Compression Error:", err);
-    }
-  };
+      setLoading(true);
+      setMessage("Uploading image...");
 
-  // Upload image to the backend
-  const uploadImage = async () => {
-    if (!image) {
-      setMessage("Please select an image to upload.");
-      return;
-    }
+      // Compress image before upload
+      const compressedFile = await imageCompression(selectedImage, options);
+      const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
 
-    try {
       const response = await fetch("http://localhost:3000/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ base64: image }),
+        body: JSON.stringify({
+          base64: base64.replace(/^data:image\/\w+;base64,/, ""),
+          name: selectedImage.name,
+        }),
       });
 
+      if (!response.ok) throw new Error("Failed to upload image.");
       const data = await response.json();
-      if (data.status === "ok") {
-        setMessage("Image uploaded successfully!");
-        setImage("");
-        fetchImages(); // Refresh images
-      } else {
-        setMessage("Failed to upload image. Please try again.");
-      }
-    } catch (err) {
-      console.error("Error uploading image:", err);
-      setMessage("Error uploading image.");
+      setMessage(data.message || "Image uploaded successfully.");
+
+      // Reset form and refresh image list
+      setSelectedImage(null);
+      setPreviewUrl("");
+      fetchImages();
+    } catch (error) {
+      console.error("Upload error:", error);
+      setMessage("Error uploading image. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Fetch images from the server
+  const fetchImages = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/api/get-image");
+      if (!response.ok) throw new Error("Failed to fetch images.");
+      const data = await response.json();
+      setAllImages(data.data || []);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setMessage("Error fetching images.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle suspicious activity (right-click, drag, etc.)
+  const handleSuspiciousActivity = async (event, imageName) => {
+    event.preventDefault(); // Prevent default download action
+    alert(`Unauthorized action detected on: ${imageName}`);
+
+    try {
+      await fetch("http://localhost:3000/api/send-alert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `Suspicious activity detected on image: ${imageName}`,
+          userEmail: "user@example.com", // Replace with dynamic email
+        }),
+      });
+    } catch (error) {
+      console.error("Alert error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
   return (
-    <div className="college-container">
-      <h1>College Memories</h1>
-      <p>
-        Share your favorite college memories with the community by uploading images below.
-      </p>
+    <div className="professional-container">
+      <header className="professional-header">
+        <h1>College</h1>
+      </header>
 
-      <div className="upload-section">
-        <h2>Upload Your College Image</h2>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="file-input"
-        />
-        {image && (
-          <div className="preview-container">
-            <h3>Image Preview</h3>
-            <img src={image} alt="Preview" className="preview-image" />
-          </div>
-        )}
-        <button onClick={uploadImage} className="upload-button">
-          Upload Image
-        </button>
+      <section className="upload-section">
+        <h2>Upload an Image</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleImageUpload();
+          }}
+        >
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {previewUrl && <img src={previewUrl} alt="Preview" className="image-preview" />}
+          <button type="submit" disabled={loading}>
+            {loading ? "Uploading..." : "Upload Image"}
+          </button>
+        </form>
         {message && <p className="message">{message}</p>}
-      </div>
+      </section>
 
-      <div className="gallery-section">
-        <h2>Uploaded College Memories</h2>
-        {allImages.length > 0 ? (
-          <div className="image-gallery">
-            {allImages.map((img, idx) => (
-              <div key={idx} className="image-item">
-                <img src={img.image} alt={`Memory ${idx}`} className="gallery-image" />
+      <section className="uploaded-images">
+        <h2>Uploaded Images</h2>
+        <div className="image-gallery">
+          {allImages.length > 0 ? (
+            allImages.map((image, index) => (
+              <div key={index} className="image-item">
+                <img
+                  src={`data:image/jpeg;base64,${image.image}`}
+                  alt={image.name}
+                  className="uploaded-image"
+                  onContextMenu={(e) => handleSuspiciousActivity(e, image.name)}
+                  onDragStart={(e) => handleSuspiciousActivity(e, image.name)}
+                  onMouseDown={(e) => handleSuspiciousActivity(e, image.name)}
+                />
+                <p>{image.name}</p>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p>No images uploaded yet. Be the first to share!</p>
-        )}
-      </div>
+            ))
+          ) : (
+            <p>No images uploaded yet.</p>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

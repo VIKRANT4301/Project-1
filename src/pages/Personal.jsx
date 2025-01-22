@@ -1,84 +1,153 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import './personal.css'; // Optional: Add custom styles for this page
+import React, { useState, useEffect } from "react";
+import imageCompression from "browser-image-compression";
+import "./personal.css";
 
 const Personal = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [allImages, setAllImages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Handle file selection
+  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Generate image preview URL
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  // Handle form submission (you can send the image to the server here)
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Upload image to the server
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      setMessage("Please select an image before uploading.");
+      return;
+    }
 
-    if (selectedImage) {
-      // Simulate image upload logic (you can replace this with actual upload logic)
-      setMessage("Image uploaded successfully!");
-      // Reset the preview and selected image
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      setLoading(true);
+      setMessage("Uploading image...");
+
+      // Compress image before upload
+      const compressedFile = await imageCompression(selectedImage, options);
+      const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
+
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          base64: base64.replace(/^data:image\/\w+;base64,/, ""),
+          name: selectedImage.name,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to upload image.");
+      const data = await response.json();
+      setMessage(data.message || "Image uploaded successfully.");
+
+      // Reset form and refresh image list
       setSelectedImage(null);
       setPreviewUrl("");
-    } else {
-      setMessage("Please select an image to upload.");
+      fetchImages();
+    } catch (error) {
+      console.error("Upload error:", error);
+      setMessage("Error uploading image. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Fetch images from the server
+  const fetchImages = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/api/get-image");
+      if (!response.ok) throw new Error("Failed to fetch images.");
+      const data = await response.json();
+      setAllImages(data.data || []);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setMessage("Error fetching images.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle suspicious activity (right-click, drag, etc.)
+  const handleSuspiciousActivity = async (event, imageName) => {
+    event.preventDefault(); // Prevent default download action
+    alert(`Unauthorized action detected on: ${imageName}`);
+
+    try {
+      await fetch("http://localhost:3000/api/send-alert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `Suspicious activity detected on image: ${imageName}`,
+          userEmail: "user@example.com", // Replace with dynamic email
+        }),
+      });
+    } catch (error) {
+      console.error("Alert error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
   return (
-    <div className="personal-container">
-      <h1>Personal Page</h1>
-      <p>Welcome to your personal page! Share your favorite memories, hobbies, and more.</p>
+    <div className="professional-container">
+      <header className="professional-header">
+        <h1>Professional Network</h1>
+      </header>
 
-      {/* Personal Content Section */}
-      <section className="personal-info">
-        <h2>Why Share Your Personal Moments?</h2>
-        <ul>
-          <li>Document your favorite memories.</li>
-          <li>Share your hobbies and passions.</li>
-          <li>Stay connected with friends and family.</li>
-          <li>Keep track of your personal growth and milestones.</li>
-        </ul>
-      </section>
-
-      <section className="call-to-action">
-        <h3>Share Your Personal Journey!</h3>
-        <p>Upload your personal photos and create a visual timeline of your life!</p>
-        <button className="join-button">Join the Personal Sharing Community</button>
-      </section>
-
-      {/* Image Upload Section */}
       <section className="upload-section">
-        <h2>Upload Your Personal Image</h2>
-        <form onSubmit={handleSubmit} className="upload-form">
-          <label htmlFor="image-upload" className="upload-label">
-            Choose an image
-          </label>
-          <input 
-            type="file" 
-            id="image-upload" 
-            accept="image/*"
-            onChange={handleImageChange} 
-          />
-          
-          {previewUrl && (
-            <div className="preview-container">
-              <h3>Image Preview:</h3>
-              <img src={previewUrl} alt="Preview" className="preview-image" />
-            </div>
-          )}
-          
-          <button type="submit" className="upload-button">Upload</button>
+        <h2>Upload an Image</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleImageUpload();
+          }}
+        >
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {previewUrl && <img src={previewUrl} alt="Preview" className="image-preview" />}
+          <button type="submit" disabled={loading}>
+            {loading ? "Uploading..." : "Upload Image"}
+          </button>
         </form>
-
-        {/* Display feedback message */}
         {message && <p className="message">{message}</p>}
+      </section>
+
+      <section className="uploaded-images">
+        <h2>Uploaded Images</h2>
+        <div className="image-gallery">
+          {allImages.length > 0 ? (
+            allImages.map((image, index) => (
+              <div key={index} className="image-item">
+                <img
+                  src={`data:image/jpeg;base64,${image.image}`}
+                  alt={image.name}
+                  className="uploaded-image"
+                  onContextMenu={(e) => handleSuspiciousActivity(e, image.name)}
+                  onDragStart={(e) => handleSuspiciousActivity(e, image.name)}
+                  onMouseDown={(e) => handleSuspiciousActivity(e, image.name)}
+                />
+                <p>{image.name}</p>
+              </div>
+            ))
+          ) : (
+            <p>No images uploaded yet.</p>
+          )}
+        </div>
       </section>
     </div>
   );

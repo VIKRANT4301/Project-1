@@ -4,46 +4,41 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import UserRouter  from './routes/user.js'; // User authentication routes
-import  UploadRouter from './routes/upload.js'; // Assuming UploadRouter is correctly defined
+import UserRouter from './routes/user.js'; // User authentication routes
+import UploadRouter from './routes/upload.js'; // Upload API routes
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration for all routes
+// CORS configuration to allow frontend to access the backend
 app.use(cors({
-  origin: "http://localhost:5174",  // Allow frontend to access the backend
-  credentials: true,  // Allow credentials (cookies)
+  origin: "http://localhost:5174",  // Adjust according to your frontend URL
+  credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
 
+// Increase payload size limit for incoming requests
 app.use(express.json({ limit: "10mb" }));
-
-app.use(bodyParser.json({ limit: '10mb' })); // Increase the limit to 10MB
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-
-
-// Middleware
-app.use(express.json());
-app.use(bodyParser.json());
-
-
-// MongoDB Connection
-mongoose.connect('mongodb://127.0.0.1:27017/Register');
-mongoose.connection.on('connected', () => console.log('Connected to MongoDB'));
-mongoose.connection.on('error', (err) => console.error('MongoDB connection error:', err));
+// Define a single connection function to prevent duplicate connections
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://vikrantchakole36:dorUQnLnCHT6TFHZ@newcluster.l0wpx.mongodb.net/'); 
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Database connection error:', err);
+    process.exit(1); // Exit process on failure
+  }
+};
 
 // Routes
 app.use('/auth', UserRouter); // User authentication routes
-app.use('/api', UploadRouter); // Upload API route, assuming it's in the `upload.js` file
+app.use('/api', UploadRouter); // Upload API routes
 
-// Start Server
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch((err) => console.error("Database connection error:", err));
+// Start the server after connecting to the database
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+});
