@@ -21,7 +21,7 @@ const Signup = () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     console.log('API URL:', apiUrl); 
 
-    Axios.post(`${apiUrl}`, {
+    Axios.post(`${apiUrl}/auth/signup`, {
       username,
       email,
       password,

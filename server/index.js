@@ -39,7 +39,10 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
-      dbName: 'media_provenance'  // Specify the database name explicitly if needed
+      tlsAllowInvalidCertificates: true,
+      connectTimeoutMS: 30000,            // Increase timeout for better debugging
+      socketTimeoutMS: 45000,              // Increase socket timeout
+      serverSelectionTimeoutMS: 5000,  // Allow invalid SSL certificates if needed
     });
     console.log('Connected to MongoDB');
   } catch (err) {
