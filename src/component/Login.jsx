@@ -14,7 +14,7 @@ const Login = () => {
 
   // Get API URL from environment variable
   // eslint-disable-next-line no-undef
-  const apiUrl = process.env.REACT_APP_API_URL || "https://media-provenance.netlify.app";
+  const apiUrl = process.env.REACT_APP_API_URL || "https://media-provenance-e3ox.onrender.com";
 
   const handleSubmit = (e) => {
     e.preventDefault();

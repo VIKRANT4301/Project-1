@@ -12,7 +12,7 @@ function Home() {
 
   // Fetch API URL from environment variable
   // eslint-disable-next-line no-undef
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
+  const apiUrl = process.env.REACT_APP_API_URL || "https://media-provenance-e3ox.onrender.com";
 
   // Fetch user data from localStorage or redirect to login if missing
   useEffect(() => {
