@@ -12,11 +12,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration to allow frontend to access the backend
+// Define allowed frontend origins
+const allowedOrigins = [
+  'http://localhost:5174',  // Local frontend (development)
+  'https://media-provenance.netlify.app'  // Deployed frontend (production)
+];
+
+// Configure CORS to allow both frontend origins dynamically
 app.use(cors({
-  origin: "http://localhost:5174",  // Adjust according to your frontend URL
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
+
+// Handle preflight requests for all routes
+app.options('*', cors());
 
 // Increase payload size limit for incoming requests
 app.use(express.json({ limit: "10mb" }));
@@ -26,13 +41,21 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 // Define a single connection function to prevent duplicate connections
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://vikrantchakole36:dorUQnLnCHT6TFHZ@newcluster.l0wpx.mongodb.net/'); 
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://vikrantchakole36:dorUQnLnCHT6TFHZ@newcluster.l0wpx.mongodb.net/', {
+      dbName: 'media_provenance'  // Specify the database name explicitly if needed
+    });
     console.log('Connected to MongoDB');
   } catch (err) {
     console.error('Database connection error:', err);
     process.exit(1); // Exit process on failure
   }
 };
+
+// Middleware to log incoming request origins for debugging
+app.use((req, res, next) => {
+  console.log('Incoming request from:', req.headers.origin);
+  next();
+});
 
 // Routes
 app.use('/auth', UserRouter); // User authentication routes
@@ -41,4 +64,6 @@ app.use('/api', UploadRouter); // Upload API routes
 // Start the server after connecting to the database
 connectDB().then(() => {
   app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+}).catch((err) => {
+  console.error("Failed to start server:", err);
 });
