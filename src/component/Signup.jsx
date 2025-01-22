@@ -1,43 +1,47 @@
 /* eslint-disable no-unused-vars */
 
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import Axios from "axios"
 import './signup.css'
 import { Link, useNavigate } from 'react-router-dom';
 
-
 const Signup = () => {
 
-      const[username, setUsername] = useState('')
-      const[email, setEmail] = useState('')
-      const[password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-      const navigate = useNavigate()
+  const navigate = useNavigate()
 
-      const handleSubmit = (e) =>{
-        e.preventDefault()
-        Axios.post('http://localhost:3000/auth/signup',{
-        username,
-        email,
-        password,
-      }).then(response =>{
-        if(response.data.status){
-            navigate('/')
-        }
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
-      }).catch(err =>{
-        console.log(err)
-      })
-    }
+    // Use the environment variable to dynamically determine the API URL
+    // eslint-disable-next-line no-undef
+    const apiUrl = process.env.REACT_APP_API_URL;
+    console.log('API URL:', apiUrl); 
 
-    return(
-      <div className="register">
+    Axios.post(`${apiUrl}/auth/signup`, {
+      username,
+      email,
+      password,
+    }).then(response => {
+      if (response.data.status) {
+        navigate('/')
+      }
+
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  return (
+    <div className="register">
       <div className="card">
         <div className="left">
           <h2>Media Integrity and Provenance</h2>
           <p>
-
-Media Integrity and Provenance refers to the process of ensuring the authenticity, origin, and history of digital media, such as images, videos, and documents, using technologies like blockchain. It aims to protect media from tampering and provide verifiable proof of its source and alterations.
+            Media Integrity and Provenance refers to the process of ensuring the authenticity, origin, and history of digital media, such as images, videos, and documents, using technologies like blockchain. It aims to protect media from tampering and provide verifiable proof of its source and alterations.
           </p>
           <span>Do you have an account?</span>
           <Link to="/">
@@ -45,31 +49,30 @@ Media Integrity and Provenance refers to the process of ensuring the authenticit
           </Link>
         </div>
 
-         <div className='right'>
-            <h2>Sign Up</h2>
-            <form className='sign-up-form' onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input type="text" placeholder='Username'
-                onChange={(e) =>setUsername(e.target.value)}
-                />
+        <div className='right'>
+          <h2>Sign Up</h2>
+          <form className='sign-up-form' onSubmit={handleSubmit}>
+            <label htmlFor="username">Username:</label>
+            <input type="text" placeholder='Username'
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
-                <label htmlFor="email">Email:</label>
-                <input type="email" autoComplete='off' placeholder='Email'
-                onChange={(e) =>setEmail(e.target.value)}/>
+            <label htmlFor="email">Email:</label>
+            <input type="email" autoComplete='off' placeholder='Email'
+              onChange={(e) => setEmail(e.target.value)} />
 
+            <label htmlFor="password">Password:</label>
+            <input type="password" placeholder='*******'
+              onChange={(e) => setPassword(e.target.value)} />
 
-                <label htmlFor="password">Password:</label>
-                <input type="password"  placeholder='*******'
-                onChange={(e) =>setPassword(e.target.value)}/>
+            <button type='submit'>Sign Up</button>
+            <p>Already have an account? </p><Link to="/login">Login</Link>
 
-                <button type='submit'>Sign Up</button>
-                <p>Already have an account? </p><Link to="/login">Login</Link>
-
-            </form>
-         </div>
-</div>
-</div>
-    )
+          </form>
+        </div>
+      </div>
+    </div>
+  )
 };
 
-export default Signup
+export default Signup;
