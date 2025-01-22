@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Parse the allowed origins from the environment variable (comma-separated)
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [
   'http://localhost:5174', // Local development origin
-  'https://media-provenance.netlify.app',
+  'https://project-1-sage-phi.vercel.app/',
 ];
 
 // Configure CORS to allow frontend origins dynamically
@@ -29,8 +29,6 @@ app.use(cors({
   },
   credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
-
-
 
 // Increase payload size limit for incoming requests
 app.use(express.json({ limit: "10mb" }));

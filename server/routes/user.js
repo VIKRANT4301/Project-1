@@ -11,7 +11,7 @@ const UserRouter = express.Router();
 
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:5174",  // Allow requests from the React app
+  origin: ["http://localhost:5174", "https://media-provenance.netlify.app"] ,// Allow requests from the React app
   credentials: true,  // Allow credentials (cookies, authorization headers)
   methods: "GET,POST,PUT,DELETE",  // Allowed HTTP methods
   allowedHeaders: "Content-Type,Authorization",  // Allowed headers
@@ -117,8 +117,8 @@ UserRouter.post("/forgotpassword", async (req, res) => {
       to: email,
       subject: "Reset Password",
       html: `<p>You requested a password reset. Click the link below to reset your password:</p>
-             <a href="http://localhost:5174/resetpassword/${token}">Reset Password</a>
-             <p>This link will expire in 5 minutes.</p>`,
+         <a href="${frontendURL}/resetpassword/${token}">Reset Password</a>
+         <p>This link will expire in 5 minutes.</p>`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

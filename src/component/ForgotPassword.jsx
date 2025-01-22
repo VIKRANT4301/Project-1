@@ -1,14 +1,18 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Axios from "axios";
-import "./fp.css"
+import "./fp.css";
 import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // New success message state
+  const [successMessage, setSuccessMessage] = useState(""); 
   const navigate = useNavigate();
+
+  // Use environment variable or default to localhost for development
+  // eslint-disable-next-line no-undef
+  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,12 +24,11 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await Axios.post("localhost:3000/auth/forgotpassword", { email });
+      const response = await Axios.post(`${backendURL}/auth/forgotpassword`, { email });
       if (response.data.status) {
         setSuccessMessage("An email has been sent with a link to reset your password.");
-        // Optional: Redirect to a page that says 'Check your email'
       } else {
-        setError(response.data.message); // Display error message from the backend
+        setError(response.data.message); 
       }
     } catch (err) {
       console.error("Error during password reset request:", err);
@@ -47,8 +50,8 @@ const ForgotPassword = () => {
         <button type="submit">Submit</button>
       </form>
 
-      {error && <div>{error}</div>}
-      {successMessage && <div>{successMessage}</div>} {/* Show success message */}
+      {error && <div className="error-message">{error}</div>}
+      {successMessage && <div className="success-message">{successMessage}</div>} 
     </div>
   );
 };

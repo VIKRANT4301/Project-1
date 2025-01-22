@@ -12,7 +12,7 @@ function Home() {
 
   // Fetch API URL from environment variable
   // eslint-disable-next-line no-undef
-  const apiUrl = process.env.REACT_APP_API_URL || "https://media-provenance-e3ox.onrender.com";
+  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3000";
 
   // Fetch user data from localStorage or redirect to login if missing
   useEffect(() => {
@@ -32,9 +32,18 @@ function Home() {
     setSearchQuery(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
     console.log("Search Query:", searchQuery);
+
+    // Example of using backendURL for a fetch request
+    try {
+      const response = await fetch(`${backendURL}/search?query=${searchQuery}`);
+      const data = await response.json();
+      console.log("Search Results:", data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
   };
 
   return (

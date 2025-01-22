@@ -11,6 +11,11 @@ const Professional = () => {
   const [allImages, setAllImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Use the environment variable for API URL
+  // eslint-disable-next-line no-undef
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000"; // Default to localhost if not set
+  console.log("API URL:", apiUrl); // Log for debugging
+
   // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -41,11 +46,11 @@ const Professional = () => {
       const compressedFile = await imageCompression(selectedImage, options);
       const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
 
-      const response = await fetch("http://localhost:3000/api/upload", {
+      const response = await fetch(`${apiUrl}/api/upload`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          base64: base64.replace(/^data:image\/\w+;base64,/, ""),
+          base64: base64.replace(/^data:image\/\w+;base64,/, ""), // Strip off the base64 data type prefix
           name: selectedImage.name,
         }),
       });
@@ -70,7 +75,7 @@ const Professional = () => {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/get-image");
+      const response = await fetch(`${apiUrl}/api/get-image`);
       if (!response.ok) throw new Error("Failed to fetch images.");
       const data = await response.json();
       setAllImages(data.data || []);
@@ -88,7 +93,7 @@ const Professional = () => {
     alert(`Unauthorized action detected on: ${imageName}`);
 
     try {
-      await fetch("http://localhost:3000/api/send-alert", {
+      await fetch(`${apiUrl}/api/send-alert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,6 +106,7 @@ const Professional = () => {
     }
   };
 
+  // Fetch images when the component mounts
   useEffect(() => {
     fetchImages();
   }, []);
