@@ -12,13 +12,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Define allowed frontend origins
-const allowedOrigins = [
-  'http://localhost:5174',  // Local frontend (development)
-  'https://media-provenance.netlify.app'  // Deployed frontend (production)
-];
+// Parse the allowed origins from the environment variable (comma-separated)
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// Configure CORS to allow both frontend origins dynamically
+// Configure CORS to allow frontend origins dynamically
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -41,7 +38,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 // Define a single connection function to prevent duplicate connections
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://vikrantchakole36:dorUQnLnCHT6TFHZ@newcluster.l0wpx.mongodb.net/', {
+    await mongoose.connect(process.env.MONGO_URI, {
       dbName: 'media_provenance'  // Specify the database name explicitly if needed
     });
     console.log('Connected to MongoDB');
