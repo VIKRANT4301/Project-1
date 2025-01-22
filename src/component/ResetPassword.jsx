@@ -14,7 +14,7 @@ const ResetPassword = () => {
 
   useEffect(() => {
     if (token) {
-      Axios.post("https://media-provenance-e3ox.onrender.com/auth/verify-token", { token })
+      Axios.post("https://localhost:3000/auth/verify-token", { token })
         .then((response) => {
           if (!response.data.status) {
             setError("Invalid or expired token.");

@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await Axios.post("https://media-provenance-e3ox.onrender.com/auth/forgotpassword", { email });
+      const response = await Axios.post("localhost:3000/auth/forgotpassword", { email });
       if (response.data.status) {
         setSuccessMessage("An email has been sent with a link to reset your password.");
         // Optional: Redirect to a page that says 'Check your email'

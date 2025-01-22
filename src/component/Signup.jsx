@@ -18,8 +18,8 @@ const Signup = () => {
 
     // Use the environment variable to dynamically determine the API URL
     // eslint-disable-next-line no-undef
-    const apiUrl = process.env.REACT_APP_API_URL||"https://media-provenance-e3ox.onrender.com";
-    console.log('API URL:', apiUrl); 
+    const apiUrl = process.env.REACT_APP_API_URL||"http://localhost:3000";
+    console.log('API URL:', apiUrl);
 
     Axios.post(`${apiUrl}/auth/signup`, {
       username,
