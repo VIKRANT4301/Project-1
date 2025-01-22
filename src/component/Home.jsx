@@ -10,8 +10,11 @@ function Home() {
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch user data from the API
+  // Fetch API URL from environment variable
+  // eslint-disable-next-line no-undef
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
+  // Fetch user data from localStorage or redirect to login if missing
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (!storedUsername) {
@@ -91,6 +94,7 @@ function Home() {
           </ul>
         </section>
 
+        {/* Share Component */}
         <div className="home">
           <Share />
         </div>
