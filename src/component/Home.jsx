@@ -12,7 +12,7 @@ function Home() {
 
   // Fetch API URL from environment variable
   // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004";
 
   // Fetch user data from localStorage or redirect to login if missing
   useEffect(() => {

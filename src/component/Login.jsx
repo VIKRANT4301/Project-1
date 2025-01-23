@@ -7,41 +7,38 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Add an error state
+  const [error, setError] = useState(""); 
   const navigate = useNavigate();
 
-  // Set Axios base URL based on environment
+  // Set Axios base URL dynamically (global or local)
   // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '')
+  const backendURL = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '') || "http://localhost:3004";
+  console.log("Using backend URL:", backendURL); // Debugging
 
   Axios.defaults.withCredentials = true;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    Axios.post(`${backendURL}/auth`, {
-      email,
-      password,
-    })
-      .then((response) => {
-        if (response.data.status) {
-          const userName = response.data.userName;
-          const token = response.data.token;
+    try {
+      const response = await Axios.post(`${backendURL}/auth/login`, { email, password });
 
-          // Store token and username in localStorage
-          localStorage.setItem("token", token);
-          localStorage.setItem("username", userName);
+      if (response.data.status) {
+        const { userName, token } = response.data;
 
-          // Navigate to the home page
-          navigate("/home", { state: { userName } });
-        } else {
-          setError("Invalid credentials. Please try again.");
-        }
-      })
-      .catch((err) => {
-        setError("An error occurred. Please try again later.");
-        console.error("Login failed:", err);
-      });
+        // Store token and username in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", userName);
+
+        // Navigate to home page with user data
+        navigate("/home", { state: { userName } });
+      } else {
+        setError(response.data.message || "Invalid credentials. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred while logging in. Please try again later.");
+      console.error("Login failed:", err);
+    }
   };
 
   return (
@@ -83,7 +80,6 @@ const Login = () => {
               Login
             </button>
 
-            {/* Show error message if there is an error */}
             {error && <div className="error-message">{error}</div>}
 
             <div className="login-links">

@@ -1,23 +1,36 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-undef */
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import cors from "cors";
-
+import dotenv from "dotenv"; // Load environment variables
 import User from "../models/User.js"; // Ensure you have a User model defined
+
+dotenv.config(); // Load .env file
 
 const UserRouter = express.Router();
 
-// CORS configuration
+// CORS configuration for local and global deployment
+const allowedOrigins = [
+  process.env.FRONTEND_URL_LOCAL || "http://localhost:5174",
+  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/"
+];
+
 const corsOptions = {
-  origin: ["http://localhost:5174", "https://media-provenance.netlify.app"] ,// Allow requests from the React app
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,  // Allow credentials (cookies, authorization headers)
-  methods: "GET,POST,PUT,DELETE",  // Allowed HTTP methods
-  allowedHeaders: "Content-Type,Authorization",  // Allowed headers
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
 };
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
 UserRouter.use(cors(corsOptions));
 
 // Signup Route
@@ -25,16 +38,13 @@ UserRouter.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if user already exists
     const user = await User.findOne({ email });
     if (user) {
-      return res.json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
     const hashpassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     const newUser = new User({
       username,
       email,
@@ -42,7 +52,7 @@ UserRouter.post("/signup", async (req, res) => {
     });
 
     await newUser.save();
-    return res.json({ status: true, message: "Record registered" });
+    return res.status(201).json({ status: true, message: "User registered successfully" });
   } catch (err) {
     console.error("Error in signup:", err);
     res.status(500).json({ message: "Internal server error" });
@@ -50,33 +60,29 @@ UserRouter.post("/signup", async (req, res) => {
 });
 
 // Login Route
-UserRouter.post("/", async (req, res) => {
+UserRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ message: "User is not registered" });
+      return res.status(400).json({ message: "User is not registered" });
     }
 
-    // Check password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.json({ message: "Password is incorrect" });
+      return res.status(400).json({ message: "Password is incorrect" });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ username: user.username }, process.env.KEY, {
+    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY, {
       expiresIn: "5m",
     });
 
-    // Set token in cookies
     res.cookie("token", token, { httpOnly: true, maxAge: 360000 });
 
-    return res.json({
+    return res.status(200).json({
       status: true,
-      message: "Login Successfully",
+      message: "Login successful",
       token,
       userName: user.username,
     });
@@ -100,9 +106,11 @@ UserRouter.post("/forgotpassword", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.KEY, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "5m",
     });
+
+    const frontendURL = process.env.REACT_APP_API_URL || "http://localhost:5174";
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -116,70 +124,59 @@ UserRouter.post("/forgotpassword", async (req, res) => {
       from: process.env.MY_GMAIL,
       to: email,
       subject: "Reset Password",
-      html: `<p>You requested a password reset. Click the link below to reset your password:</p>
+      html: `
+         <p>You requested a password reset. Click the link below to reset your password:</p>
          <a href="${frontendURL}/resetpassword/${token}">Reset Password</a>
          <p>This link will expire in 5 minutes.</p>`,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).json({ message: "Error sending email" });
-      }
-      console.log("Email sent:", info.response);
-      res.json({ status: true, message: "Email sent successfully" });
-    });
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ status: true, message: "Email sent successfully" });
   } catch (err) {
     console.error("Error in forgotpassword:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// Backend route to verify the reset token
+// Verify Token Route
 UserRouter.post("/verify-token", async (req, res) => {
   const { token } = req.body;
   try {
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.KEY); // Verify JWT token
-    if (!decoded) {
-      return res.status(400).json({ status: false, message: "Invalid token" });
-    }
-    return res.json({ status: true });
+    // eslint-disable-next-line no-unused-vars
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    return res.status(200).json({ status: true });
   } catch (err) {
     console.error("Error verifying token:", err);
     return res.status(400).json({ status: false, message: "Expired or invalid token" });
   }
 });
 
-
-
-
- UserRouter.post("/send-alert", async (req, res) => {
+// Send Security Alert Email
+UserRouter.post("/send-alert", async (req, res) => {
   const { message, email } = req.body;
 
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.MY_GMAIL,
-      pass: process.env.MY_PASSWORD,
-    },
-  });
-
-  let mailOptions = {
-    from: process.env.MY_GMAIL,
-    to: email,
-    subject: "Security Alert: Unauthorized Image Download Attempt",
-    text: message,
-  };
-
   try {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MY_GMAIL,
+        pass: process.env.MY_PASSWORD,
+      },
+    });
+
+    let mailOptions = {
+      from: process.env.MY_GMAIL,
+      to: email,
+      subject: "Security Alert: Unauthorized Image Download Attempt",
+      text: message,
+    };
+
     await transporter.sendMail(mailOptions);
-    res.status(200).send({ success: true, message: "Alert email sent." });
+    res.status(200).json({ success: true, message: "Alert email sent." });
   } catch (error) {
     console.error("Email error:", error);
-    res.status(500).send({ success: false, message: "Failed to send alert email." });
+    res.status(500).json({ success: false, message: "Failed to send alert email." });
   }
 });
-
 
 export default UserRouter;

@@ -10,16 +10,27 @@ import UploadRouter from './routes/upload.js'; // Upload API routes
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3004; // Default to 3004 if PORT isn't defined
 
-// Ensure PORT is set to avoid local execution
+// Ensure PORT is set for local and production environments
 if (!PORT) {
   throw new Error("PORT is not defined. Ensure it is set in the environment variables.");
 }
 
-// Configure CORS to allow only the Vercel frontend URL globally
+// CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL_LOCAL || "http://localhost:5174",  // Local environment
+  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/",  // Production frontend URL
+];
+
 app.use(cors({
-  origin: process.env.REACT_APP_API_URL, // Restrict access to Vercel frontend
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
 
@@ -28,7 +39,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-// Connect to MongoDB
+// MongoDB connection
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -50,13 +61,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// Routes for user authentication and uploads
 app.use('/auth', UserRouter);
 app.use('/api', UploadRouter);
 
 // Start the server
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on global server at port ${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on ${process.env.NODE_ENV} server at port ${PORT}`));
 }).catch((err) => {
   console.error("Failed to start server:", err);
 });

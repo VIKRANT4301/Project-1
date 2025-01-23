@@ -14,7 +14,7 @@ const ResetPassword = () => {
 
   // Set the backend URL dynamically based on environment
   // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3000"; // Default to localhost if not set
+  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004"; // Default to localhost if not set
 
   useEffect(() => {
     if (token) {

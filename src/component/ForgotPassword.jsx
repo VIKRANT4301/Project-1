@@ -12,7 +12,7 @@ const ForgotPassword = () => {
 
   // Use environment variable or default to localhost for development
   // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3000";
+  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

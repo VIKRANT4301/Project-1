@@ -13,7 +13,7 @@ const Professional = () => {
 
   // Use the environment variable for API URL
   // eslint-disable-next-line no-undef
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000"; // Default to localhost if not set
+  const apiUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004"; // Default to localhost if not set
   console.log("API URL:", apiUrl); // Log for debugging
 
   // Handle image selection
