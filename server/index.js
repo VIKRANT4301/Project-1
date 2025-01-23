@@ -10,11 +10,16 @@ import UploadRouter from './routes/upload.js'; // Upload API routes
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
-// Configure CORS to allow only the Vercel app origin
+// Ensure PORT is set to avoid local execution
+if (!PORT) {
+  throw new Error("PORT is not defined. Ensure it is set in the environment variables.");
+}
+
+// Configure CORS to allow only the Vercel frontend URL globally
 app.use(cors({
-  origin: process.env.REACT_APP_API_URL, // Allow only the Vercel frontend URL
+  origin: process.env.REACT_APP_API_URL, // Restrict access to Vercel frontend
   credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
 
@@ -23,7 +28,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-// Define a single connection function to prevent duplicate connections
+// Connect to MongoDB
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -46,12 +51,12 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/auth', UserRouter); // User authentication routes
-app.use('/api', UploadRouter); // Upload API routes
+app.use('/auth', UserRouter);
+app.use('/api', UploadRouter);
 
-// Start the server after connecting to the database
+// Start the server
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on global server at port ${PORT}`));
 }).catch((err) => {
   console.error("Failed to start server:", err);
 });
