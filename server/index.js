@@ -12,21 +12,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Parse the allowed origins from the environment variable (comma-separated)
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [
-  'http://localhost:5174', // Local development origin
-  'https://project-1-sage-phi.vercel.app/',
-];
-
-// Configure CORS to allow frontend origins dynamically
+// Configure CORS to allow only the Vercel app origin
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: process.env.REACT_APP_API_URL, // Allow only the Vercel frontend URL
   credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
 
@@ -40,9 +28,9 @@ const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
       tlsAllowInvalidCertificates: true,
-      connectTimeoutMS: 30000,            // Increase timeout for better debugging
-      socketTimeoutMS: 45000,              // Increase socket timeout
-      serverSelectionTimeoutMS: 5000,  // Allow invalid SSL certificates if needed
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 5000,
     });
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -63,7 +51,7 @@ app.use('/api', UploadRouter); // Upload API routes
 
 // Start the server after connecting to the database
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }).catch((err) => {
   console.error("Failed to start server:", err);
 });
