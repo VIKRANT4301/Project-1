@@ -13,7 +13,7 @@ const Signup = () => {
 
   // Use the environment variable to dynamically determine the API URL
   // eslint-disable-next-line no-undef
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000"; // Default to localhost if not set
+  const apiUrl = process.env.REACT_APP_API_URL  // Default to localhost if not set
   console.log("API URL:", apiUrl); // Log the API URL for debugging
 
   const handleSubmit = (e) => {
