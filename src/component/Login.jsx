@@ -12,7 +12,7 @@ const Login = () => {
 
   // Set Axios base URL based on environment
   // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_BACKEND_URL
+  const backendURL = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '')
 
   Axios.defaults.withCredentials = true;
 
