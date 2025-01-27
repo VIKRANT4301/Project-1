@@ -7,13 +7,13 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   // Set Axios base URL dynamically (global or local)
   // eslint-disable-next-line no-undef
   const backendURL = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '') || "http://localhost:3004";
-  console.log("Using backend URL:", backendURL); // Debugging
+  console.log("Using backend URL:", backendURL);
 
   Axios.defaults.withCredentials = true;
 
@@ -48,7 +48,7 @@ const Login = () => {
           <h2>Media Integrity and Provenance</h2>
 
           <span>Do not have an account?</span>
-          <Link to="/signup">
+          <Link to="/">
             <button>Sign Up</button>
           </Link>
         </div>

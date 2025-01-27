@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); 
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   // Use environment variable or default to localhost for development
@@ -17,22 +17,30 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Clear previous messages
+    setError("");
+    setSuccessMessage("");
+
     // Validate email before sending the request
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
 
     try {
       const response = await Axios.post(`${backendURL}/auth/forgotpassword`, { email });
+
       if (response.data.status) {
         setSuccessMessage("An email has been sent with a link to reset your password.");
+        setEmail("");  // Clear email input on success
       } else {
-        setError(response.data.message); 
+        setError(response.data.message || "Something went wrong. Please try again.");
       }
     } catch (err) {
       console.error("Error during password reset request:", err);
-      setError("An error occurred. Please try again later.");
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again later."
+      );
     }
   };
 
@@ -51,7 +59,7 @@ const ForgotPassword = () => {
       </form>
 
       {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>} 
+      {successMessage && <div className="success-message">{successMessage}</div>}
     </div>
   );
 };
