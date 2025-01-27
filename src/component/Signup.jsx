@@ -11,16 +11,12 @@ const Signup = () => {
   const [error, setError] = useState(""); // For displaying error messages
   const navigate = useNavigate();
 
-  // Define the API URL based on environment or default to localhost
-  const apiUrl =
-    // eslint-disable-next-line no-undef
-    process.env.NODE_ENV === "production"
-      ? "https://project-1-sage-phi.vercel.app"
-      : "http://localhost:3004";
-
+  // Use the environment variable to dynamically determine the API URL
+  // eslint-disable-next-line no-undef
+  const apiUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004"; // Default to localhost if not set
   console.log("API URL:", apiUrl); // Log the API URL for debugging
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!username || !email || !password) {
@@ -28,22 +24,22 @@ const Signup = () => {
       return;
     }
 
-    try {
-      const response = await Axios.post(`${apiUrl}/auth/signup`, {
-        username,
-        email,
-        password,
+    Axios.post(`${apiUrl}/auth/signup`, {
+      username,
+      email,
+      password,
+    })
+      .then((response) => {
+        if (response.data.status) {
+          navigate("/login"); // Redirect to login after successful signup
+        } else {
+          setError(response.data.message || "An error occurred. Please try again.");
+        }
+      })
+      .catch((err) => {
+        setError("Error during signup. Please try again later.");
+        console.error("Signup failed:", err);
       });
-
-      if (response.data.status) {
-        navigate("/login"); // Redirect to login after successful signup
-      } else {
-        setError(response.data.message || "An error occurred. Please try again.");
-      }
-    } catch (err) {
-      setError("Error during signup. Please try again later.");
-      console.error("Signup failed:", err);
-    }
   };
 
   return (
@@ -69,7 +65,6 @@ const Signup = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
             />
 
             <label htmlFor="email">Email:</label>
@@ -79,7 +74,6 @@ const Signup = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
 
             <label htmlFor="password">Password:</label>
@@ -88,7 +82,6 @@ const Signup = () => {
               placeholder="*******"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
             />
 
             {error && <div className="error-message">{error}</div>} {/* Display error message if any */}
