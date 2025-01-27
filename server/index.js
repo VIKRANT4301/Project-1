@@ -19,7 +19,8 @@ if (!PORT) {
 
 // CORS configuration
 const allowedOrigins = [
-  process.env.REACT_APP_API_URL || "http://localhost:5174",
+  process.env.FRONTEND_URL_LOCAL || "http://localhost:5174",  // Local environment
+  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/",  // Production frontend URL
 ];
 
 app.use(cors({
@@ -30,7 +31,7 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,
+  credentials: true,  // Allow credentials (cookies, authorization headers)
 }));
 
 // Increase payload size limit for incoming requests
@@ -49,15 +50,15 @@ const connectDB = async () => {
     });
     console.log('Connected to MongoDB');
   } catch (err) {
-    console.error('Database connection error:', err);
-    process.exit(1); // Exit process on failure
-  }
+  console.error('Database connection error:', err);
+  process.exit(1); // Exit process on failure
+}
 };
 
 // Middleware to log incoming request origins for debugging
 app.use((req, res, next) => {
-  console.log('Incoming request from:', req.headers.origin);
-  next();
+console.log('Incoming request from:', req.headers.origin);
+next();
 });
 
 // Routes for user authentication and uploads
@@ -66,7 +67,7 @@ app.use('/api', UploadRouter);
 
 // Start the server
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on ${process.env.NODE_ENV} server at port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on ${process.env.NODE_ENV} server at port ${PORT}`));
 }).catch((err) => {
-  console.error("Failed to start server:", err);
+console.error("Failed to start server:", err);
 });
