@@ -19,8 +19,8 @@ if (!PORT) {
 
 // CORS configuration
 const allowedOrigins = [
-  "https://project-1-sage-phi.vercel.app",
-  "http://localhost:5174"
+  process.env.FRONTEND_URL_LOCAL || "http://localhost:5174",  // Local environment
+  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/",
 ];
 
 app.use(cors({
@@ -31,7 +31,7 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,  // Allow credentials (cookies, authorization headers)
+  credentials: true,
 }));
 
 // Increase payload size limit for incoming requests
