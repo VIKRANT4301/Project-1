@@ -19,9 +19,8 @@ if (!PORT) {
 
 // CORS configuration
 const allowedOrigins = [
-  process.env.FRONTEND_URL_LOCAL || "http://localhost:5174",  // Local environment
-  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/",  // Production frontend URL
-];
+  process.env.REACT_APP_API_URL || "https://project-1-sage-phi.vercel.app/",
+  ];
 
 app.use(cors({
   origin: function (origin, callback) {
