@@ -1,61 +1,107 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Axios from "axios";
-import "./fp.css";
-import { useNavigate } from "react-router-dom";
+import "./signup.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const ForgotPassword = () => {
+const Signup = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); 
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // For displaying error messages
   const navigate = useNavigate();
 
-  // Use environment variable or default to localhost for development
-  // eslint-disable-next-line no-undef
-  const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3004";
+  // Define the API URL based on environment or default to localhost
+  const apiUrl =
+    // eslint-disable-next-line no-undef
+    process.env.NODE_ENV === "production"
+      ? "https://project-1-sage-phi.vercel.app"
+      : "http://localhost:3004";
+
+  console.log("API URL:", apiUrl); // Log the API URL for debugging
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate email before sending the request
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setError("Please enter a valid email address.");
+    if (!username || !email || !password) {
+      setError("All fields are required.");
       return;
     }
 
     try {
-      const response = await Axios.post(`${backendURL}/auth/forgotpassword`, { email });
+      const response = await Axios.post(`${apiUrl}/auth/signup`, {
+        username,
+        email,
+        password,
+      });
 
       if (response.data.status) {
-        setSuccessMessage("An email has been sent with a link to reset your password.");
-        setError("");
+        navigate("/login"); // Redirect to login after successful signup
       } else {
-        setError(response.data.message);
+        setError(response.data.message || "An error occurred. Please try again.");
       }
     } catch (err) {
-      console.error("Error during password reset request:", err);
-      setError("An error occurred. Please try again later.");
+      setError("Error during signup. Please try again later.");
+      console.error("Signup failed:", err);
     }
   };
 
   return (
-    <div className="forgot-password-container">
-      <h2>Forgot Password</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
+    <div className="register">
+      <div className="card">
+        <div className="left">
+          <h2>Media Integrity and Provenance</h2>
+          <p>
+            Media Integrity and Provenance refers to the process of ensuring the authenticity, origin, and history of digital media, such as images, videos, and documents, using technologies like blockchain. It aims to protect media from tampering and provide verifiable proof of its source and alterations.
+          </p>
+          <span>Do you have an account?</span>
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
+        </div>
 
-      {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>} 
+        <div className="right">
+          <h2>Sign Up</h2>
+          <form className="sign-up-form" onSubmit={handleSubmit}>
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              autoComplete="off"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              placeholder="*******"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            {error && <div className="error-message">{error}</div>} {/* Display error message if any */}
+
+            <button type="submit">Sign Up</button>
+            <p>
+              Already have an account? <Link to="/login">Login</Link>
+            </p>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default ForgotPassword;
+export default Signup;
