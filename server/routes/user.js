@@ -34,7 +34,7 @@ const corsOptions = {
 UserRouter.use(cors(corsOptions));
 
 // Signup Route
-UserRouter.post("/signup", async (req, res) => {
+UserRouter.post("/", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
