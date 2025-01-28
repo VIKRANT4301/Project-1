@@ -24,7 +24,7 @@ const Signup = () => {
       return;
     }
 
-    Axios.post(`${apiUrl}/auth/signup`, {
+    Axios.post(`${apiUrl}/auth/`, {
       username,
       email,
       password,
